@@ -2,23 +2,14 @@
  * Класс для валидации входных данных.
  */
 public class InputValidator {
-    private final double x;
-    private final double y;
-    private final double r;
-
-    public InputValidator(double x, double y, double r) {
-        this.x = x;
-        this.y = y;
-        this.r = r;
-    }
 
     /**
      * Проверяет корректность всех параметров.
      *
      * @return true, если все параметры корректны, иначе false.
      */
-    public boolean validateInput() {
-        return validateX() && validateY() && validateR();
+    public boolean validateInput(double x, double y, double r) {
+        return validateX(x) && validateY(y) && validateR(r);
     }
 
     /**
@@ -27,7 +18,7 @@ public class InputValidator {
      *
      * @return true, если X валидно, иначе false.
      */
-    private boolean validateX() {
+    private boolean validateX(double x) {
         return x >= -3 && x <= 5;
     }
 
@@ -37,7 +28,7 @@ public class InputValidator {
      *
      * @return true, если Y валидно, иначе false.
      */
-    private boolean validateY() {
+    private boolean validateY(double y) {
         double[] validYValues = {-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2};
         for (double validY : validYValues)
             if (y == validY)
@@ -51,7 +42,7 @@ public class InputValidator {
      *
      * @return true, если R валидно, иначе false.
      */
-    private boolean validateR() {
+    private boolean validateR(double r) {
         return r >= 2 && r <= 5;
     }
 }
