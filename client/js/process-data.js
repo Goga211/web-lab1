@@ -11,20 +11,26 @@ function validateValues() {
     const xValue = parseFloat(document.getElementById('X-input').value);
     const rValue = parseFloat(document.getElementById('R-input').value);
 
+    const xlen = document.getElementById('X-input').value.split('.')[1];
+    const rlen = document.getElementById('R-input').value.split('.')[1];
+
+
+    if ((xlen && xlen.length > 15) || (rlen && rlen.length > 15)) {
+        throw new InvalidValueException("Слишком большое количество знаков после запятой");
+    }
+
     if (isNaN(xValue) || xValue < -3 || xValue >= 5) {
-        alert('Ошибка: значение X должно быть в диапазоне от -3 до 5.');
-        return;
+        throw new InvalidValueException('Ошибка: значение X должно быть в диапазоне от -3 до 5.');
     }
 
     if (selectedY === null) {
-        alert('Ошибка: выберите значение Y.');
-        return;
+        throw new InvalidValueException('Ошибка: выберите значение Y.');
     }
 
     if (isNaN(rValue) || rValue < 2 || rValue >= 5) {
-        alert('Ошибка: значение R должно быть в диапазоне от 2 до 5.');
-        return;
+        throw new InvalidValueException('Ошибка: значение R должно быть в диапазоне от 2 до 5.');
     }
+    return true;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -39,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('process-data').addEventListener('click', function (e) {
         e.preventDefault();
-
+        
         validateValues();
 
         const xVal = parseFloat(document.querySelector('#X-input').value);
