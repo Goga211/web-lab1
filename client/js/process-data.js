@@ -16,18 +16,22 @@ function validateValues() {
 
 
     if ((xlen && xlen.length > 15) || (rlen && rlen.length > 15)) {
+        alert("Слишком большое количество знаков после запятой");
         throw new InvalidValueException("Слишком большое количество знаков после запятой");
     }
 
     if (isNaN(xValue) || xValue < -3 || xValue >= 5) {
+        alert("Ошибка: значение X должно быть в диапазоне от -3 до 5.");
         throw new InvalidValueException('Ошибка: значение X должно быть в диапазоне от -3 до 5.');
     }
 
     if (selectedY === null) {
+        alert("Ошибка: выберите значение Y.");
         throw new InvalidValueException('Ошибка: выберите значение Y.');
     }
 
     if (isNaN(rValue) || rValue < 2 || rValue >= 5) {
+        alert("Ошибка: значение R должно быть в диапазоне от 2 до 5.");
         throw new InvalidValueException('Ошибка: значение R должно быть в диапазоне от 2 до 5.');
     }
     return true;
@@ -97,7 +101,9 @@ document.addEventListener("DOMContentLoaded", () => {
         newRow.appendChild(rCell);
 
         const resultCell = document.createElement('td');
-        resultCell.textContent = data.result;
+        if(data.result == 'True') resultCell.textContent = "Point is inside the graph"
+        else resultCell.textContent = "Point is outside the graph"
+
         newRow.appendChild(resultCell);
 
         const timeCell = document.createElement('td');
