@@ -6,10 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 public class Main {
-    /**
-     * Параметры запроса.
-     */
-    private static final HashMap<String, String> params = new HashMap<>();
+
     /**
      * Метод обработки запроса.
      */
@@ -25,12 +22,9 @@ public class Main {
             }catch (Exception e){
                 sendErrorResponse405("Поддерживаются только GET запросы");
             }
-            
-            parseParams();
 
             Dto dto = new Dto();
-
-            dto.setAll(Double.parseDouble(params.get("x")), Double.parseDouble(params.get("y")), Double.parseDouble(params.get("r")));
+            dto.SetVal();
 
             InputValidator inputValidator = new InputValidator();
             if (!inputValidator.validateInput(dto.getX(), dto.getY(), dto.getR())) {
@@ -40,8 +34,8 @@ public class Main {
 
             long startTime = System.nanoTime();
 
-            boolean isPointInside = isPointInside(dto.getX(), dto.getY(), dto.getR());
-            String result = isPointInside ? "True" : "False";
+            boolean isPointInsideCheck = CheckPointPos.isPointInside(dto.getX(), dto.getY(), dto.getR());
+            String result = isPointInsideCheck ? "True" : "False";
 
             long Time = (System.nanoTime() - startTime) / 1_000_000;
 
@@ -51,66 +45,12 @@ public class Main {
         }
     }
 
-    /**
-     * Обработать параметры запроса.
-     */
-    public static void parseParams() {
-        String queryString = FCGIInterface.request.params.getProperty("QUERY_STRING");
-        if (queryString != null && !queryString.isEmpty()) {
-            for (String pair : queryString.split("&")) {
-                String[] keyValue = pair.split("=");
-                if (keyValue.length > 1) {
-                    params.put(keyValue[0], keyValue[1]);
-                } else {
-                    params.put(keyValue[0], "");
-                }
-            }
-        }
-    }
 
     /**
-     * Метод для проверки того, что точка лежит в окружности.
+     * Возвращает JSON ответ.
      *
-     * @param x Координата по оси x.
-     * @param y Координата по оси y.
-     * @param r Радиус окружности.
-     *
-     * @return Лежит ли точка в окружности.
+     * @param requestData Данные запроса.
      */
-    private static boolean isPointInside(double x, double y, double r) {
-        return isPointLowerLeftQuarter(x, y, r) || isPointLowerRightQuarter(x, y, r) || isPointTopLeftQuarter(x, y, r) || isPointTopRightQuarter(x, y, r);
-    }
-
-    private static boolean isPointTopLeftQuarter(double x, double y, double r) {
-        if(x <= 0 && y >= 0){
-            return (x * x + y * y <= r * r);
-        }
-        return false;
-    }
-
-    private static boolean isPointTopRightQuarter(double x, double y, double r) {
-        if (x >= 0 && y >= 0){
-            return (r/2 >= y && r/2 >= x && y <= x);
-        }
-        return false;
-    }
-
-    public static boolean isPointLowerLeftQuarter(double x, double y, double r) {
-        if (x <= 0 && y <= 0) {
-            return (-r <= x && y >= -r && y <= -r/2);
-        }
-        return false;
-    }
-
-    public static boolean isPointLowerRightQuarter(double x, double y, double r) {
-        return false;
-    }
-
-    /**
-         * Возвращает JSON ответ.
-         *
-         * @param requestData Данные запроса.
-         */
     private static void sendJsonResponse(RequestData requestData) {
         System.out.println("Content-type: application/json\n\n");
         String jsonResponse = requestData.toJson();
