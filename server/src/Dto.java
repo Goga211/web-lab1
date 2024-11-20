@@ -4,9 +4,7 @@ import java.io.*;
 import java.util.HashMap;
 
 public class Dto {
-    /**
-     * Параметры запроса.
-     */
+
     private static final HashMap<String, String> params = new HashMap<>();
 
     private double x;
@@ -43,13 +41,14 @@ public class Dto {
         this.y = y;
         this.r = r;
     }
-    public void SetVal(){
+
+    public void SetVal() {
         parseParams();
+
         this.x = Double.parseDouble(params.get("x"));
         this.y = Double.parseDouble(params.get("y"));
         this.r = Double.parseDouble(params.get("r"));
     }
-
     /**
      * Обработать параметры запроса.
      */

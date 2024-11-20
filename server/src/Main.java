@@ -19,9 +19,19 @@ public class Main {
                 if (!"GET".equals(requestMethod)) {
                     throw new Exception("Invalid request method");
                 }
+
+                String URI = System.getProperties().getProperty("REQUEST_URI");
+                if (!URI.matches(".*/fcgi-bin/Web1.jar(\\?.*)?")) {
+                    sendErrorResponse404("Invalid URL. The URL must match the expected format.");
+                    continue;
+                }
             }catch (Exception e){
                 sendErrorResponse405("Поддерживаются только GET запросы");
+                continue;
             }
+
+
+
 
             Dto dto = new Dto();
             dto.SetVal();
@@ -29,7 +39,7 @@ public class Main {
             InputValidator inputValidator = new InputValidator();
             if (!inputValidator.validateInput(dto.getX(), dto.getY(), dto.getR())) {
                 sendErrorResponse400("Invalid input values. x must be in range [-3, 5], y must be one of {-2, -1.5, -1, ..., 2}, and R must be in range [2, 5].");
-                return;
+                continue;
             }
 
             long startTime = System.nanoTime();
@@ -63,7 +73,7 @@ public class Main {
      * @param errorMessage Сообщение.
      */
     private static void sendErrorResponse400(String errorMessage) {
-        System.out.print("HTTP 1.0 400 Bad Request\n");
+        System.out.print("Status: 400 Bad Request\n");
         System.out.print("Content-type: application/json\n\n");
         String jsonResponse = String.format("{\"error\": \"%s\"}", errorMessage);
         System.out.println(jsonResponse);
@@ -75,7 +85,19 @@ public class Main {
      * @param errorMessage Сообщение.
      */
     private static void sendErrorResponse405(String errorMessage) {
-        System.out.print("HTTP 1.0 405 Method not Allowed\n");
+        System.out.print("Status: 405 Method not Allowed\n");
+        System.out.print("Content-type: application/json\n\n");
+        String jsonResponse = String.format("{\"error\": \"%s\"}", errorMessage);
+        System.out.println(jsonResponse);
+    }
+
+    /**
+     * Возвращает JSON сообщение об ошибке.
+     *
+     * @param errorMessage Сообщение.
+     */
+    private static void sendErrorResponse404(String errorMessage) {
+        System.out.print("Status: 404 Not found\n");
         System.out.print("Content-type: application/json\n\n");
         String jsonResponse = String.format("{\"error\": \"%s\"}", errorMessage);
         System.out.println(jsonResponse);
